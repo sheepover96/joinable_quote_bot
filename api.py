@@ -51,7 +51,7 @@ class Quote(db.Model):
 
 @app.route("/", methods=['POST'])
 def register():
-    return render_template('base.html')  return render_template('base.html')
+    return render_template('templates/base.html')  return render_template('templates/base.html')
 
 
 @app.route("/user_register", methods=['POST'])
