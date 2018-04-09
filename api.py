@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 
-import os, json
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask import Flask, render_template, request
+from flask_sqlalchemy import SQLAlchemy
 
 from requests_oauthlib import OAuth1Session
 import twitter
 
+import os, json
 import datetime
 import random
 
 # DB接続に関する部分
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 db = SQLAlchemy(app)
 
 # モデル作成
@@ -51,7 +52,7 @@ class Quote(db.Model):
 
 @app.route("/", methods=['POST'])
 def register():
-    return render_template('templates/base.html')  return render_template('templates/base.html')
+    return render_template('templates/base.html')
 
 
 @app.route("/user_register", methods=['POST'])
