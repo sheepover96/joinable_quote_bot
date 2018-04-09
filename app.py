@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from flask.ext.sqlalchemy import SQLAlchemy
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, url_for
 from flask_sqlalchemy import SQLAlchemy
 
 from requests_oauthlib import OAuth1Session
@@ -14,6 +14,7 @@ import random
 # DB接続に関する部分
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/quote_bot'
 db = SQLAlchemy(app)
 
 # モデル作成
@@ -33,11 +34,11 @@ class User(db.Model):
 #名言モデル
 class Quote(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    text = db.Column(db.Text(200), unique=True)
+    text = db.Column(db.Text, unique=True)
     author = db.Column(db.String(80), unique=False)
     book = db.Column(db.String(80), unique=False)
     user_id = db.Column(db.Integer,db.ForeignKey('user.id'))
-    date = db.Column(db.DateTime())
+    date = db.Column(db.DateTime)
 
     def __init__(self, text, author, book, user_id, date):
         self.text = text
