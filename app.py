@@ -87,7 +87,7 @@ def quote_register():
 
 
 #つぶやき用API
-@api.route("/tweet", methods=['POST'])
+@app.route("/tweet", methods=['POST'])
 def tweet():
     quote = None
     nquotes = Quote.query(Quote).all().count()
