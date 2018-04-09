@@ -6,8 +6,6 @@ from datetime import datetime
 from requests_oauthlib import OAuth1Session
 import twitter
 
-import config
-
 class Bot():
     TWEET_URL = "https://api.twitter.com/1.1/statuses/update.json"
 
