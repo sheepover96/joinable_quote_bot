@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 
 from flask.ext.sqlalchemy import SQLAlchemy
-from flask import Flask, render_template, request, url_for
+from flask import Flask, render_template, request, url_for, jsonify
 from flask_sqlalchemy import SQLAlchemy
 
 from requests_oauthlib import OAuth1Session
 import twitter
 
 import os, json
-import datetime
-import random
+import datetime, random
 
 # DB接続に関する部分
 app = Flask(__name__)
@@ -38,6 +37,7 @@ class Quote(db.Model):
     author = db.Column(db.String(80), unique=False)
     book = db.Column(db.String(80), unique=False)
     user_id = db.Column(db.Integer,db.ForeignKey('user.id'))
+    dm_id = db.Column(db.Integer)
     date = db.Column(db.DateTime)
 
     def __init__(self, text, author, book, user_id, date):
@@ -51,22 +51,23 @@ class Quote(db.Model):
         return '<Quote %r>' % self.text
 
 
-@app.route("/", methods=['POST'])
+@app.route("/", methods=['GET', 'POST'])
 def register():
-    return render_template('templates/base.html')
+    return render_template('base.html')
 
 
 @app.route("/user_register", methods=['POST'])
 def user_register():
     if request.method == 'POST':
         username = request.form['username']
-        #ユーザが存在するかつ名言がまだないなら追加
+        #ユーザが存在しないなら追加
         if not db.session.query(User).filter(User.username == username).count():
             date = datetime.datetime.now()
             user = User(username, date)
             db.session.add(user)
             db.session.commit()
-
+            print(user)
+    return render_template('base.html')
 
 
 @app.route("/quote_register", methods=['POST'])
@@ -84,32 +85,70 @@ def quote_register():
                 quote = Quote(text, author, book, user_id, date)
                 db.session.add(quote)
                 db.session.commit()
+    return render_template('base.html')
 
 
 
 #つぶやき用API
 @app.route("/tweet", methods=['POST'])
 def tweet():
-    quote = None
-    nquotes = Quote.query(Quote).all().count()
-    if not nquotes:
-        rand_id = random.randint(1, nquotes)
-        quote = Quote.query(Quote).get(id=rand)
+    if request.method == 'POST':
+        quote = None
+        nquotes = Quote.query(Quote).all().count()
+        CK = request.form['CK']
+        CS = request.form['CS']
+        AT = request.form['AT']
+        ATS = request.form['ATS']
+        if not nquotes:
+            rand_id = random.randint(1, nquotes)
+            quote = Quote.query(Quote).get(id=rand)
 
-        url = "https://api.twitter.com/1.1/statuses/update.json"
-        api = OAuth1Session(consumer_key=os.environ["CONSUMER_KEY"],
-                          consumer_secret=os.environ["CONSUMER_SECRET"],
-                          access_token_key=os.environ["ACCESS_TOKEN_KEY"],
-                          access_token_secret=os.environ["ACCESS_TOKEN_SECRET"]
-                          )
+            url = "https://api.twitter.com/1.1/statuses/update.json"
+            api = OAuth1Session(consumer_key=CK,
+                              consumer_secret=CS,
+                              access_token_key=AT,
+                              access_token_secret=ATS
+                              )
 
-        text = quote.text + '\n    ~' + quote.author + '\n quoted from ' + quote.book
+            text = quote.text + '\n    ~' + quote.author + '\n quoted from ' + quote.book
 
-        params = {
-                "status": text
-                }
+            params = {
+                    "status": text
+                    }
 
-        res = api.post(url, params)
+            res = api.post(url, params)
+            json_res = [quote]
+            return jsonify(json_res.to_dict())
+
+
+#引用get用API
+@app.route("/get_quote", methods=['POST'])
+def get_quote():
+    if request.method == 'POST':
+        CK = request.form['CK']
+        CS = request.form['CS']
+        AT = request.form['AT']
+        ATS = request.form['ATS']
+        if not nquotes:
+            rand_id = random.randint(1, nquotes)
+            quote = Quote.query(Quote).get(id=rand)
+
+            url = "https://api.twitter.com/1.1/statuses/update.json"
+            api = OAuth1Session(consumer_key=CK,
+                              consumer_secret=CS,
+                              access_token_key=AT,
+                              access_token_secret=ATS
+                              )
+
+            text = quote.text + '\n    ~' + quote.author + '\n quoted from ' + quote.book
+
+            params = {
+                    "status": text
+                    }
+
+            res = api.post(url, params)
+            json_res = [quote]
+            return jsonify(json_res.to_dict())
 
 
 if __name__ == '__main__':
