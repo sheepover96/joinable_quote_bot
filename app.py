@@ -12,8 +12,8 @@ import datetime, random
 
 # DB接続に関する部分
 app = Flask(__name__)
-#app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/quote_bot'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/quote_bot'
 db = SQLAlchemy(app)
 
 # モデル作成
