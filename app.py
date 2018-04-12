@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from flask.ext.sqlalchemy import SQLAlchemy
 from flask import Flask, render_template, request, url_for, jsonify
 from flask_sqlalchemy import SQLAlchemy
 
@@ -51,7 +50,7 @@ class Quote(db.Model):
         return '<Quote %r>' % self.text
 
 
-@app.route("/", methods=['GET', 'POST'])
+@app.route("/")
 def register():
     return render_template('base.html')
 
