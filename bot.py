@@ -82,9 +82,9 @@ def quote_register(CK, CS, AT, ATS):
 
 if __name__ == "__main__":
     #アクセス用
-    CK = os.environ["CONSUMER_KEY"],
-    CS = os.environ["CONSUMER_SECRET"],
-    AT = os.environ["ACCESS_TOKEN_KEY"],
+    CK = os.environ["CONSUMER_KEY"]
+    CS = os.environ["CONSUMER_SECRET"]
+    AT = os.environ["ACCESS_TOKEN_KEY"]
     ATS = os.environ["ACCESS_TOKEN_SECRET"]
 
     #名言を登録
