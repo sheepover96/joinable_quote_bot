@@ -22,7 +22,7 @@ class Bot():
 
 def tweet(CK, CS, AT, ATS):
     quote = None
-    nquotes = db.session.query(Quote).all().count()
+    nquotes = db.session.query(Quote).count()
     if not nquotes:
         rand_id = random.randint(1, nquotes)
         quote = Quote.query(Quote).get(id=rand)
