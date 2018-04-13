@@ -71,8 +71,8 @@ def quote_register(CK, CS, AT, ATS):
                 if len(parts) > 3:
                     book = parts[3]
                 date = datetime.datetime.now()
-                q = db.session.query(Quote).filter(Quote.text==main_text)
-                if not q:
+                q = db.session.query(Quote).filter(Quote.text==main_text).first()
+                if q is None:
                     q = Quote(main_text, author, book, user.id, date)
                     db.session.add(q)
                     db.session.commit()
