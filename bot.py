@@ -39,6 +39,7 @@ def tweet(CK, CS, AT, ATS):
                 }
 
         res = api.post(url, params)
+        print("aaaa")
 
 def quote_register(CK, CS, AT, ATS):
     url = "https://api.twitter.com/1.1/direct_messages.json"
