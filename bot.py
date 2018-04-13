@@ -37,7 +37,15 @@ def tweet(CK, CS, AT, ATS):
         url = "https://api.twitter.com/1.1/statuses/update.json"
         api = OAuth1Session(CK,CS,AT,ATS)
 
-        text = quote.text + '\n' + quote.author + ' ' + quote.book
+        author = "不明"
+        if quote.quthor is not None:
+            author = quote.author
+
+        book = "不明"
+        if book.quthor is not None:
+            book = quote.book
+
+        text = quote.text + '\n' + 'ー' author + '~' + book + '~'
 
         params = {
                 "status": text
