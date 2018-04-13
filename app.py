@@ -7,13 +7,13 @@ from requests_oauthlib import OAuth1Session
 import twitter
 
 import os, json
-import datetime, random
+import datetime
 
 # DB接続に関する部分
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+#app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/quote_bot'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/quote_bot'
 db = SQLAlchemy(app)
 
 # モデル作成
@@ -37,14 +37,15 @@ class Quote(db.Model):
     author = db.Column(db.String(80), unique=False)
     book = db.Column(db.String(80), unique=False)
     user_id = db.Column(db.Integer,db.ForeignKey('user.id'))
-    dm_id = db.Column(db.Integer)
+    dm_id = db.Column(db.BigInteger)
     date = db.Column(db.DateTime)
 
-    def __init__(self, text, author, book, user_id, date):
+    def __init__(self, text, author, book, user_id, dm_id, date):
         self.text = text
         self.author = author
         self.book = book
         self.user_id = user_id
+        self.dm_id = dm_id
         self.date = date
 
     def __repr__(self):

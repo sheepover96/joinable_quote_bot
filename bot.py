@@ -24,13 +24,15 @@ def tweet(CK, CS, AT, ATS):
     quote = None
     nquotes = db.session.query(Quote).count()
     if nquotes != 0:
-        rand_id = random.randint(1, nquotes)
-        quote = db.session.query(Quote).get(id=rand_id)
+        quote = None
+        while quote is None:
+            rand_id = random.randint(1, nquotes) + 1
+            quote = db.session.query(Quote).get(rand_id)
 
         url = "https://api.twitter.com/1.1/statuses/update.json"
         api = OAuth1Session(CK,CS,AT,ATS)
 
-        text = quote.text + '\n    ~' + quote.author + '\n quoted from ' + quote.book
+        text = quote.text + '\n' + quote.author + ' ' + quote.book
 
         params = {
                 "status": text
@@ -41,10 +43,9 @@ def tweet(CK, CS, AT, ATS):
 def quote_register(CK, CS, AT, ATS):
     url = "https://api.twitter.com/1.1/direct_messages.json"
     api = OAuth1Session(CK, CS, AT, ATS)
-    params = {}
+    params = {'full_text': True}
 
-    last_quote = db.session.query(Quote)\
-                   .order_by(Quote.id.desc()).first()
+    last_quote = db.session.query(Quote).order_by(Quote.id.desc()).first()
 
     if last_quote is not None:
         since_id = last_quote.dm_id
@@ -55,7 +56,7 @@ def quote_register(CK, CS, AT, ATS):
     if res.status_code == 200:
         dms = json.loads(res.text)
         for dm in dms:
-            id = dm['id']
+            id = int(dm['id'])
             text = dm['text']
             sender = dm['sender_screen_name']
             user = db.session.query(User).filter(User.username==sender)\
@@ -63,7 +64,10 @@ def quote_register(CK, CS, AT, ATS):
 
             if '@meibun' in text and user:
                 print(text)
-                parts = text.split(',')
+                parts = text.split('::')
+                main_text = None
+                author = None
+                book = None
                 if len(parts) > 1:
                     main_text = parts[1]
                 if len(parts) > 2:
@@ -71,11 +75,12 @@ def quote_register(CK, CS, AT, ATS):
                 if len(parts) > 3:
                     book = parts[3]
                 date = datetime.datetime.now()
-                q = db.session.query(Quote).filter(Quote.text==main_text).first()
-                if q is None:
-                    q = Quote(main_text, author, book, user.id, date)
-                    db.session.add(q)
-                    db.session.commit()
+                if main_text is not None:
+                    q = db.session.query(Quote).filter(Quote.text==main_text).first()
+                    if q is None:
+                        q = Quote(main_text, author, book, user.id, int(id), date)
+                        db.session.add(q)
+                        db.session.commit()
     else:
         print('failed', res.status_code)
 
