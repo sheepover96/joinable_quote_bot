@@ -25,7 +25,7 @@ def tweet(CK, CS, AT, ATS):
     nquotes = db.session.query(Quote).count()
     if nquotes != 0:
         rand_id = random.randint(1, nquotes)
-        quote = Quote.query(Quote).get(id=rand)
+        quote = db.session.query(Quote).get(id=rand)
 
         url = "https://api.twitter.com/1.1/statuses/update.json"
         api = OAuth1Session(CK,CS,AT,ATS)
