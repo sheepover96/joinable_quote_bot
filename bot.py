@@ -38,11 +38,11 @@ def tweet(CK, CS, AT, ATS):
         api = OAuth1Session(CK,CS,AT,ATS)
 
         author = "不明"
-        if quote.quthor is not None:
+        if quote.author is not None:
             author = quote.author
 
         book = "不明"
-        if book.quthor is not None:
+        if quote.book is not None:
             book = quote.book
 
         text = quote.text + '\n' + 'ー' + author + '~' + book + '~'
