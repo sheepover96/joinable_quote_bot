@@ -45,7 +45,7 @@ def tweet(CK, CS, AT, ATS):
         if quote.book is not None:
             book = quote.book
 
-        text = quote.text + '\n' + 'ー' + author + '~' + book + '~'
+        text = quote.text + '\n' + 'ー' + author + ' ~' + book + '~'
 
         params = {
                 "status": text
