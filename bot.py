@@ -21,23 +21,22 @@ class Bot():
         pass
 
 def tweet(CK, CS, AT, ATS):
-    if request.method == 'POST':
-        quote = None
-        nquotes = db.session.query(Quote).all().count()
-        if not nquotes:
-            rand_id = random.randint(1, nquotes)
-            quote = Quote.query(Quote).get(id=rand)
+    quote = None
+    nquotes = db.session.query(Quote).all().count()
+    if not nquotes:
+        rand_id = random.randint(1, nquotes)
+        quote = Quote.query(Quote).get(id=rand)
 
-            url = "https://api.twitter.com/1.1/statuses/update.json"
-            api = OAuth1Session(CK,CS,AT,ATS)
+        url = "https://api.twitter.com/1.1/statuses/update.json"
+        api = OAuth1Session(CK,CS,AT,ATS)
 
-            text = quote.text + '\n    ~' + quote.author + '\n quoted from ' + quote.book
+        text = quote.text + '\n    ~' + quote.author + '\n quoted from ' + quote.book
 
-            params = {
-                    "status": text
-                    }
+        params = {
+                "status": text
+                }
 
-            res = api.post(url, params)
+        res = api.post(url, params)
 
 def quote_register(CK, CS, AT, ATS):
     url = "https://api.twitter.com/1.1/direct_messages.json"
