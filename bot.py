@@ -29,7 +29,7 @@ def tweet(CK, CS, AT, ATS):
             quote = Quote.query(Quote).get(id=rand)
 
             url = "https://api.twitter.com/1.1/statuses/update.json"
-            api = OAuth1Session(=CK,CS,AT,ATS)
+            api = OAuth1Session(CK,CS,AT,ATS)
 
             text = quote.text + '\n    ~' + quote.author + '\n quoted from ' + quote.book
 
