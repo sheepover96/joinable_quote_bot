@@ -11,6 +11,11 @@ import urllib.request, urllib.parse
 from app import db
 from app import User, Quote
 
+SPLITTER = '::'
+QUOTE_REGISTER = '@meibun'
+USER_REGISTER = '@sanga'
+
+
 class Bot():
     TWEET_URL = "https://api.twitter.com/1.1/statuses/update.json"
 
@@ -38,19 +43,23 @@ def tweet(CK, CS, AT, ATS):
                 "status": text
                 }
 
-        res = api.post(url, params)
-        print("aaaa")
 
-def quote_register(CK, CS, AT, ATS):
+        res = api.post(url, params)
+
+def register(CK, CS, AT, ATS):
     url = "https://api.twitter.com/1.1/direct_messages.json"
     api = OAuth1Session(CK, CS, AT, ATS)
     params = {'full_text': True}
 
     last_quote = db.session.query(Quote).order_by(Quote.id.desc()).first()
+    last_user = db.session.query(User).order_by(User.dm_id.desc()).first()
 
-    if last_quote is not None:
-        since_id = last_quote.dm_id
+    if last_quote is not None and last_user is not None:
+        since_quote_id = last_quote.dm_id
+        since_user_id = last_user.dm_id
+        since_id = min([since_quote_id, since_user_id])
         params["since_id"] = since_id
+
 
     res = api.get(url, params=params)
 
@@ -63,9 +72,15 @@ def quote_register(CK, CS, AT, ATS):
             user = db.session.query(User).filter(User.username==sender)\
                     .first()
 
-            if '@meibun' in text and user:
+            if USER_REGISTER in text and user is None:
+                date = datetime.datetime.now()
+                user = User(sender, date, id)
+                db.session.add(user)
+                db.session.commit()
+
+            if QUOTE_REGISTER in text and user:
                 print(text)
-                parts = text.split('::')
+                parts = text.split(SPLITTER)
                 main_text = None
                 author = None
                 book = None
@@ -79,7 +94,7 @@ def quote_register(CK, CS, AT, ATS):
                 if main_text is not None:
                     q = db.session.query(Quote).filter(Quote.text==main_text).first()
                     if q is None:
-                        q = Quote(main_text, author, book, user.id, int(id), date)
+                        q = Quote(main_text, author, book, user.id, id, date)
                         db.session.add(q)
                         db.session.commit()
     else:
@@ -94,7 +109,7 @@ if __name__ == "__main__":
     ATS = os.environ["ACCESS_TOKEN_SECRET"]
 
     #名言を登録
-    quote_register(CK, CS, AT, ATS)
+    register(CK, CS, AT, ATS)
 
     #ツイート
     tweet(CK, CS, AT, ATS)

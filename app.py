@@ -22,10 +22,12 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True)
     date = db.Column(db.DateTime())
+    dm_id = db.Column(db.BigInteger)
 
-    def __init__(self, username, date):
+    def __init__(self, username, date, dm_id=1):
         self.username = username
         self.date = date
+        self.dm_id = dm_id
 
     def __repr__(self):
         return '<User %r>' % self.username
