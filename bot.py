@@ -51,7 +51,6 @@ def tweet(CK, CS, AT, ATS):
                 "status": text
                 }
 
-
         res = api.post(url, params)
 
 def register(CK, CS, AT, ATS):
@@ -65,9 +64,8 @@ def register(CK, CS, AT, ATS):
     if last_quote is not None and last_user is not None:
         since_quote_id = last_quote.dm_id
         since_user_id = last_user.dm_id
-        since_id = min([since_quote_id, since_user_id])
+        since_id = max([since_quote_id, since_user_id])
         params["since_id"] = since_id
-
 
     res = api.get(url, params=params)
 
