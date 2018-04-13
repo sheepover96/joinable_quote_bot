@@ -53,6 +53,7 @@ def quote_register(CK, CS, AT, ATS):
     res = api.get(url, params=params)
 
     if res.status_code == 200:
+        print(res.status_code)
         dms = json.loads(res.text)
         for dm in dms:
             id = dm['id']
