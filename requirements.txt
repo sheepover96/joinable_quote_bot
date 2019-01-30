@@ -15,3 +15,4 @@ SQLAlchemy==1.2.6
 twitter==1.18.0
 urllib3==1.22
 Werkzeug==0.14.1
+psycopg2-binary
