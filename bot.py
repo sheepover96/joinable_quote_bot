@@ -54,7 +54,7 @@ def tweet(CK, CS, AT, ATS):
         res = api.post(url, params)
 
 def register(CK, CS, AT, ATS):
-    dm_list_url = "https://api.twitter.com/1.1/direct_messages.json"
+    dm_list_url = "https://api.twitter.com/1.1/direct_messages/events/list.json"
     user_get_url = "https://api.twitter.com/1.1/users/show.json"
     api = OAuth1Session(CK, CS, AT, ATS)
     params = {'full_text': True}
