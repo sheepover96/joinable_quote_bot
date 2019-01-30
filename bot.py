@@ -68,14 +68,17 @@ def register(CK, CS, AT, ATS):
         since_id = max([since_quote_id, since_user_id])
 
     res = api.get(dm_list_url)
+    print(res)
 
     if res.status_code == 200:
+        print("aa")
         dms = json.loads(res.text)
         for dm in dms:
             id = int(dm['id'])
             text = dm['message_create']['message_data']['text']
-            sender_id = dm['message_create']['sender_id']
+            sender_id = int(dm['message_create']['sender_id'])
             sender_username = api.get(user_get_url, params={'user_id':sender_id})['screen_name']
+            print(sender_username)
             user = db.session.query(User).filter(User.username==sender_username).first()
 
             if USER_REGISTER in text and user is None:
@@ -116,6 +119,7 @@ if __name__ == "__main__":
 
     #名言を登録
     register(CK, CS, AT, ATS)
+    print("register finished")
 
     #ツイート
     tweet(CK, CS, AT, ATS)
