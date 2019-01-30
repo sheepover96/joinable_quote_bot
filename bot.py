@@ -54,7 +54,8 @@ def tweet(CK, CS, AT, ATS):
         res = api.post(url, params)
 
 def register(CK, CS, AT, ATS):
-    url = "https://api.twitter.com/1.1/direct_messages.json"
+    dm_list_url = "https://api.twitter.com/1.1/direct_messages.json"
+    user_get_url = "https://api.twitter.com/1.1/users/show.json"
     api = OAuth1Session(CK, CS, AT, ATS)
     params = {'full_text': True}
 
@@ -65,22 +66,21 @@ def register(CK, CS, AT, ATS):
         since_quote_id = last_quote.dm_id
         since_user_id = last_user.dm_id
         since_id = max([since_quote_id, since_user_id])
-        params["since_id"] = since_id
 
-    res = api.get(url, params=params)
+    res = api.get(dm_list_url)
 
     if res.status_code == 200:
         dms = json.loads(res.text)
         for dm in dms:
             id = int(dm['id'])
-            text = dm['text']
-            sender = dm['sender_screen_name']
-            user = db.session.query(User).filter(User.username==sender)\
-                    .first()
+            text = dm['message_create']['message_data']['text']
+            sender_id = dm['message_create']['sender_id']
+            sender_username = api.get(user_get_url, params={'user_id':sender_id})
+            user = db.session.query(User).filter(User.username==sender_username).first()
 
             if USER_REGISTER in text and user is None:
                 date = datetime.datetime.now()
-                user = User(sender, date, id)
+                user = User(sender_username, date, id)
                 db.session.add(user)
                 db.session.commit()
 
