@@ -78,8 +78,9 @@ def register(CK, CS, AT, ATS):
             id = int(dm['id'])
             text = dm['message_create']['message_data']['text']
             sender_id = int(dm['message_create']['sender_id'])
-            sender_username = api.get(user_get_url, params={'user_id':sender_id})['screen_name']
-            print(sender_username)
+            sender_object = api.get(user_get_url, params={'user_id':sender_id})
+            sender_json = json.loads(sender_object.txt)
+            sender_username = sender_json['screen_name']
             user = db.session.query(User).filter(User.username==sender_username).first()
 
             if USER_REGISTER in text and user is None:
