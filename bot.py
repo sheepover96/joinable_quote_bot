@@ -72,7 +72,8 @@ def register(CK, CS, AT, ATS):
 
     if res.status_code == 200:
         print("aa")
-        dms = json.loads(res.text)
+        dm_json = json.loads(res.text)
+        dms = dm_json['events']
         for dm in dms:
             id = int(dm['id'])
             text = dm['message_create']['message_data']['text']
