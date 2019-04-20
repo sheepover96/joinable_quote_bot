@@ -80,7 +80,7 @@ def register(CK, CS, AT, ATS):
             sender_id = int(dm['message_create']['sender_id'])
             sender_object = api.get(user_get_url, params={'user_id':sender_id})
             sender_json = json.loads(sender_object.text)
-            print(sender_json)
+            print(type(sender_json))
             sender_username = sender_json['screen_name']
             user = db.session.query(User).filter(User.username==sender_username).first()
 
