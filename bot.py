@@ -80,35 +80,35 @@ def register(CK, CS, AT, ATS):
             sender_id = int(dm['message_create']['sender_id'])
             sender_object = api.get(user_get_url, params={'user_id':sender_id})
             sender_json = json.loads(sender_object.text)
-            print(sender_json.keys())
-            sender_username = sender_json['screen_name']
-            user = db.session.query(User).filter(User.username==sender_username).first()
+            if 'screen_name' in sender_json:
+                sender_username = sender_json['screen_name']
+                user = db.session.query(User).filter(User.username==sender_username).first()
 
-            if USER_REGISTER in text and user is None:
-                date = datetime.datetime.now()
-                user = User(sender_username, date, id)
-                db.session.add(user)
-                db.session.commit()
+                if USER_REGISTER in text and user is None:
+                    date = datetime.datetime.now()
+                    user = User(sender_username, date, id)
+                    db.session.add(user)
+                    db.session.commit()
 
-            if QUOTE_REGISTER in text and user:
-                print(text)
-                parts = text.split(SPLITTER)
-                main_text = None
-                author = None
-                book = None
-                if len(parts) > 1:
-                    main_text = parts[1]
-                if len(parts) > 2:
-                    author = parts[2]
-                if len(parts) > 3:
-                    book = parts[3]
-                date = datetime.datetime.now()
-                if main_text is not None:
-                    q = db.session.query(Quote).filter(Quote.text==main_text).first()
-                    if q is None:
-                        q = Quote(main_text, author, book, user.id, id, date)
-                        db.session.add(q)
-                        db.session.commit()
+                if QUOTE_REGISTER in text and user:
+                    print(text)
+                    parts = text.split(SPLITTER)
+                    main_text = None
+                    author = None
+                    book = None
+                    if len(parts) > 1:
+                        main_text = parts[1]
+                    if len(parts) > 2:
+                        author = parts[2]
+                    if len(parts) > 3:
+                        book = parts[3]
+                    date = datetime.datetime.now()
+                    if main_text is not None:
+                        q = db.session.query(Quote).filter(Quote.text==main_text).first()
+                        if q is None:
+                            q = Quote(main_text, author, book, user.id, id, date)
+                            db.session.add(q)
+                            db.session.commit()
     else:
         print('failed', res.status_code)
 
