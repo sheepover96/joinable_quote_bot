@@ -31,15 +31,10 @@ def tweet(CK, CS, AT, ATS):
     if nquotes != 0:
         quote = None
         while quote is None:
-<<<<<<< HEAD
             rand_id = quote_id_list[random.randint(0, len(quote_id_list))]
             print("len", len(quote_id_list))
             print("rand_id", rand_id.id)
             quote = db.session.query(Quote).get(rand_id.id)
-=======
-            rand_id = random.randint(1, nquotes) + 1
-            quote = db.session.query(Quote).get(rand_id)
->>>>>>> parent of e8cbbc8... id bug fix
 
         url = "https://api.twitter.com/1.1/statuses/update.json"
         api = OAuth1Session(CK,CS,AT,ATS)
