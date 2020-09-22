@@ -33,7 +33,7 @@ def tweet(CK, CS, AT, ATS):
         while quote is None:
             rand_id = quote_id_list[random.randint(0, len(quote_id_list))]
             print("len", len(quote_id_list))
-            print("rand_id", rand_id)
+            print("rand_id", rand_id.id)
             quote = db.session.query(Quote).get(rand_id.id)
 
         url = "https://api.twitter.com/1.1/statuses/update.json"
