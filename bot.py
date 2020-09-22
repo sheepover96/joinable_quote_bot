@@ -27,16 +27,12 @@ class Bot():
 
 def tweet(CK, CS, AT, ATS):
     quote = None
-<<<<<<< HEAD
     quote_id_list = db.session.query(Quote.id).all()
-=======
-    nquotes = db.session.query(Quote).count()
->>>>>>> parent of e8cbbc8... id bug fix
     if nquotes != 0:
         quote = None
         while quote is None:
-            rand_id = random.randint(1, nquotes) + 1
-            quote = db.session.query(Quote).get(rand_id)
+            rand_id = quote_id_list[random.randint(0, len(quote_id_list))]
+            quote = db.session.query(Quote).get(rand_id.id)
 
         url = "https://api.twitter.com/1.1/statuses/update.json"
         api = OAuth1Session(CK,CS,AT,ATS)
