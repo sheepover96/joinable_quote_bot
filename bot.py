@@ -27,21 +27,21 @@ class Bot():
 
 def tweet(CK, CS, AT, ATS):
     quote = None
-    nquotes = db.session.query(Quote).count()
-    if nquotes != 0:
+    quote_id_list = db.session.query(Quote.id).all()
+    if len(quote_id_list) != 0:
         quote = None
         while quote is None:
-            rand_id = random.randint(1, nquotes) + 1
-            quote = db.session.query(Quote).get(rand_id)
+            rand_id = quote_id_list[random.randint(0, len(quote_id_list))]
+            quote = db.session.query(Quote).get(rand_id.id)
 
         url = "https://api.twitter.com/1.1/statuses/update.json"
         api = OAuth1Session(CK,CS,AT,ATS)
 
-        author = "不明"
+        author = "?"
         if quote.author is not None:
             author = quote.author
 
-        book = "不明"
+        book = "?"
         if quote.book is not None:
             book = quote.book
 
